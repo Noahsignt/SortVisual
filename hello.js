@@ -16,10 +16,10 @@ function drawArray(array, canvas, context){
     for(let i = 0; i < array.length; i++){
         let length = array[i];
         let x = i * (canvas.width / array.length);
-        let y = 0.75 * canvas.height;
+        let y = canvas.height;
 
         //need to normalize height in range
-        let normalized = (0.75 * canvas.height) * (length)/100
+        let normalized = (canvas.height) * (length)/100
 
         const lightness =
             90 -
@@ -33,7 +33,8 @@ function drawArray(array, canvas, context){
     }
 }
 
-function bubbleSort(arr) {
+function bubbleSort() {
+    numbers = generate100();
     let i = 0;
     let j = 0;
     let sorting = true;
@@ -72,9 +73,66 @@ function bubbleSort(arr) {
     }, 1 );
 }
 
+function selectionSort() {
+    numbers = generate100();
+    let intervalId = setInterval(selectionSortStep, 10);
+    let i = 0;
+
+    function selectionSortStep() {
+        let minIndex = i;
+        for (let j = i+1; j < numbers.length; j++) {
+            if (numbers[j] < numbers[minIndex]) {
+                minIndex = j;
+            }
+        }
+        // swap arr[i] and arr[minIndex]
+        let temp = numbers[i];
+        numbers[i] = numbers[minIndex];
+        numbers[minIndex] = temp;
+
+        i++;
+
+        // draw the updated array on the canvas
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        drawArray(numbers, canvas, ctx);
+
+        if (i >= numbers.length-1) {
+            clearInterval(intervalId);
+        }
+    }
+}
+
+function insertionSort() {
+    numbers = generate100();
+    let intervalId = setInterval(insertionSortStep, 10);
+    let i = 1;
+
+    function insertionSortStep() {
+        let key = numbers[i];
+        let j = i-1;
+
+        while (j >= 0 && numbers[j] > key) {
+            numbers[j+1] = numbers[j];
+            j--;
+        }
+
+        numbers[j+1] = key;
+        i++;
+
+        // draw the updated array on the canvas
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        drawArray(numbers, canvas, ctx);
+
+        if (i >= numbers.length) {
+            clearInterval(intervalId);
+        }
+    }
+}
+
+
 let canvas = document.getElementById("canvas");
 canvas.width = window.innerWidth;
-canvas.height = window.innerHeight;
+canvas.height = window.innerHeight * 0.75;
 let ctx = canvas.getContext("2d");
 let numbers = generate100();
 drawArray(numbers, canvas, ctx);
